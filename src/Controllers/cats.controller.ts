@@ -11,33 +11,21 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { Response } from "express";
-import { CreateCatDto, UpdateCatDto, ListAllEntities } from "./types/cats.dto";
+import { CreateCatDto } from "./types/cats.dto";
+import { CatsService } from "../Services/cats.service";
+import { Cat } from "../interfaces/cat.interface";
 
 @Controller("cats")
 export class CatsController {
-  @Get(":id")
-  findOne(@Param() params): string {
-    console.log(params.id);
-    return `This action returns a #${params.id} cat`;
+  constructor(private catsService: CatsService) {}
+
+  @Post()
+  async create(@Body() createCatDto: CreateCatDto) {
+    this.catsService.create(createCatDto);
   }
 
   @Get()
-  findAll(@Res() res: Response) {
-    res.status(HttpStatus.OK).json(["HIHIHIHI"]);
-  }
-
-  @Post()
-  create(@Body() createCatDto: CreateCatDto) {
-    return `This action adds a new cat ${createCatDto.name}`;
-  }
-
-  @Put(":id")
-  update(@Param("id") id: string, @Body() updateCatDto: UpdateCatDto) {
-    return `This action updates a #${id} cat`;
-  }
-
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return `This action removes a #${id} cat`;
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
   }
 }
